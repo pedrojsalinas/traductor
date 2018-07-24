@@ -1,10 +1,12 @@
-from googletrans import Translator
-translator = Translator()
+import urllib2.request
+import json
 
-def translate(text):
-    print(translator.translate(text, dest='en').text)
+url = 'https://www.googleapis.com/language/translate/v2?key={0}&q={1}&source={2}&target={3}'
 
+def translate(api_key, text, sourcelang, targetlang):
+	request = urllib2.Request(url.format(api_key.encode('utf-8'), text.encode('utf-8'), sourcelang.encode('utf-8'), targetlang.encode('utf-8')))
+	response = urllib2.urlopen(request).read()
+	data = json.loads(response)
+	return data['data']['translations'][0]['translatedText'].encode('utf-8')
 
-print('Ingrese texto')
-text = input()
-translate(text)
+print (translate('API-KEY', 'Hello World', 'en', 'ja'))
